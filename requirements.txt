@@ -14,4 +14,4 @@ ffmpeg-python
 ffmpeg
 Pillow
 ujson
-https://github.com/mradityahalder/kaal_search@maste
+https://github.com/mradityahalder/kaal_search@master
