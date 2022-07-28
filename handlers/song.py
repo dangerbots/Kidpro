@@ -1,7 +1,7 @@
 import os
 
 import requests
-import yt_dlp
+import youtube_dl
 from pyrogram import Client, filters
 from youtube_search import YoutubeSearch
 
