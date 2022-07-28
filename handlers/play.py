@@ -1,29 +1,27 @@
 import os
 from os import path
+
+import aiofiles
+import aiohttp
+import ffmpeg
+import requests
+from PIL import Image, ImageDraw, ImageFont
 from pyrogram import Client, filters
-from pyrogram.types import Message, Voice, InlineKeyboardButton, InlineKeyboardMarkup
 from pyrogram.errors import UserAlreadyParticipant
+from pyrogram.types import InlineKeyboardButton, InlineKeyboardMarkup, Message
+from pytgcalls import StreamType
+from pytgcalls.types.input_stream import InputAudioStream, InputStream
+from youtube_search import YoutubeSearch
+
+import converter
 from callsmusic import callsmusic, queues
 from callsmusic.callsmusic import client as USER
-from helpers.admins import get_administrators
-import requests
-import aiohttp
-from youtube_search import YoutubeSearch
-import converter
-from datetime import datetime
-from time import time
-from downloaders import youtube
 from config import DURATION_LIMIT
-from helpers.filters import command
-from helpers.decorators import errors
+from downloaders import youtube
+from helpers.admins import get_administrators
 from helpers.errors import DurationLimitError
-from helpers.gets import get_url, get_file_name
-import aiofiles
-import ffmpeg
-from PIL import Image, ImageFont, ImageDraw
-from pytgcalls import StreamType
-from pytgcalls.types.input_stream import InputAudioStream
-from pytgcalls.types.input_stream import InputStream
+from helpers.filters import command
+from helpers.gets import get_file_name, get_url
 
 
 def transcode(filename):
@@ -45,7 +43,7 @@ def convert_seconds(seconds):
 # Convert hh:mm:ss to seconds
 def time_to_seconds(time):
     stringt = str(time)
-    return sum(int(x) * 60 ** i for i, x in enumerate(reversed(stringt.split(":"))))
+    return sum(int(x) * 60**i for i, x in enumerate(reversed(stringt.split(":"))))
 
 
 # Change image size
@@ -167,7 +165,9 @@ async def play(_, message: Message):
                     InlineKeyboardButton(
                         text="𝗖𝗵𝗮𝗻𝗻𝗲𝗹✨️", url=f"https://t.me/danger_BOTs"
                     ),
-                    InlineKeyboardButton(text="𝗚𝗿𝗼𝘂𝗽🌴", url=f"https://t.me/nammude_keralam"),
+                    InlineKeyboardButton(
+                        text="𝗚𝗿𝗼𝘂𝗽🌴", url=f"https://t.me/nammude_keralam"
+                    ),
                 ]
             ]
         )
@@ -190,7 +190,7 @@ async def play(_, message: Message):
             thumb = requests.get(thumbnail, allow_redirects=True)
             open(thumb_name, "wb").write(thumb.content)
             duration = results[0]["duration"]
-            url_suffix = results[0]["url_suffix"]
+            results[0]["url_suffix"]
             views = results[0]["views"]
             durl = url
             durl = durl.replace("youtube", "youtubepp")
@@ -212,7 +212,7 @@ async def play(_, message: Message):
                     ]
                 ]
             )
-        except Exception as e:
+        except Exception:
             title = "NaN"
             thumb_name = "https://telegra.ph/file/675ce638c73cae75744b7.jpg"
             duration = "NaN"
@@ -254,7 +254,7 @@ async def play(_, message: Message):
             thumb = requests.get(thumbnail, allow_redirects=True)
             open(thumb_name, "wb").write(thumb.content)
             duration = results[0]["duration"]
-            url_suffix = results[0]["url_suffix"]
+            results[0]["url_suffix"]
             views = results[0]["views"]
             durl = url
             durl = durl.replace("youtube", "youtubepp")
@@ -275,7 +275,9 @@ async def play(_, message: Message):
                     InlineKeyboardButton(
                         text="𝗖𝗵𝗮𝗻𝗻𝗲𝗹✨️", url=f"https://t.me/danger_BOTs"
                     ),
-                    InlineKeyboardButton(text="𝗚𝗿𝗼𝘂𝗽🌴", url=f"https://t.me/nammude_keralam"),
+                    InlineKeyboardButton(
+                        text="𝗚𝗿𝗼𝘂𝗽🌴", url=f"https://t.me/nammude_keralam"
+                    ),
                 ]
             ]
         )
@@ -288,7 +290,7 @@ async def play(_, message: Message):
         requested_by = message.from_user.first_name
         await generate_cover(requested_by, title, views, duration, thumbnail)
         file_path = await converter.convert(youtube.download(url))
- 
+
     ACTV_CALLS = []
     chat_id = message.chat.id
     for x in callsmusic.pytgcalls.active_calls:
@@ -309,14 +311,14 @@ async def play(_, message: Message):
         return await lel.delete()
     else:
         await callsmusic.pytgcalls.join_group_call(
-                chat_id, 
-                InputStream(
-                    InputAudioStream(
-                        file_path,
-                    ),
+            chat_id,
+            InputStream(
+                InputAudioStream(
+                    file_path,
                 ),
-                stream_type=StreamType().local_stream,
-            )
+            ),
+            stream_type=StreamType().local_stream,
+        )
 
         await message.reply_photo(
             photo="final.png",

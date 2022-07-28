@@ -1,12 +1,10 @@
-import os 
-from pyrogram import Client
-import asyncio
-from config import SUDO_USERS
-from config import PMPERMIT
-from pyrogram import filters
-from pyrogram.types import Message
+import os
+
+from pyrogram import Client, filters
+from pyrogram.types import InlineKeyboardButton, InlineKeyboardMarkup, Message
+
 from callsmusic import client as USER
-from pyrogram.types import Message, Voice, InlineKeyboardButton, InlineKeyboardMarkup
+from config import PMPERMIT, SUDO_USERS
 
 master_user = os.environ.get("MASTER_USERNAME", None)
 
@@ -14,14 +12,11 @@ master_user = os.environ.get("MASTER_USERNAME", None)
 PMSET = True
 pchats = []
 
+
 @USER.on_message(filters.text & filters.private & ~filters.me & ~filters.bot)
 async def pmPermit(client: USER, message: Message):
     keyboard = InlineKeyboardMarkup(
-        [
-            [
-                InlineKeyboardButton(text="⚜ Master ⚜", url=f"https://t.me/DhrubaXd")   
-            ]
-        ]
+        [[InlineKeyboardButton(text="⚜ Master ⚜", url=f"https://t.me/DhrubaXd")]]
     )
     if PMPERMIT == "ENABLE":
         if PMSET:
@@ -35,7 +30,6 @@ async def pmPermit(client: USER, message: Message):
             )
             return
 
-    
 
 @Client.on_message(filters.command(["/pmpermit"]))
 async def bye(client: Client, message: Message):
@@ -52,15 +46,17 @@ async def bye(client: Client, message: Message):
             await message.reply_text("PM Permit Disabled")
             return
 
-@USER.on_message(filters.text & filters.private & filters.me)        
+
+@USER.on_message(filters.text & filters.private & filters.me)
 async def autopmPermiat(client: USER, message: Message):
     chat_id = message.chat.id
     if not chat_id in pchats:
         pchats.append(chat_id)
         await message.reply_text("Auto Approved ...")
         return
-    message.continue_propagation()    
-    
+    message.continue_propagation()
+
+
 @USER.on_message(filters.command("a", [".", ""]) & filters.me & filters.private)
 async def pmPermiat(client: USER, message: Message):
     chat_id = message.chat.id
@@ -68,8 +64,8 @@ async def pmPermiat(client: USER, message: Message):
         pchats.append(chat_id)
         await message.reply_text("Approoved to PM")
         return
-    message.continue_propagation()    
-    
+    message.continue_propagation()
+
 
 @USER.on_message(filters.command("da", [".", ""]) & filters.me & filters.private)
 async def rmpmPermiat(client: USER, message: Message):
